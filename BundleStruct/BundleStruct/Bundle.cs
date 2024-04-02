@@ -16,8 +16,8 @@ namespace BundleStruct
             {
                 if (value==1 || value == 2 || value == 5 || value == 10 || value == 50 || value == 100 || value == 200 || value == 500 || value == 1000 || value == 2000 || value == 5000)
                     banknote = value;
-
-                throw new ArgumentException("Номинал банкноты может принимать только определенные значения.");
+                else
+                    throw new ArgumentException("Номинал банкноты может принимать только определенные значения.");
             }
         }
 
@@ -27,7 +27,7 @@ namespace BundleStruct
             get => count;
             set
             {
-                if (value<=0)
+                if (value<0)
                     throw new ArgumentException("Количество купюр в пачке не может быть отрицательным.");
 
                 count = value;
@@ -52,7 +52,7 @@ namespace BundleStruct
             if (obj is Bundle)
                 return (Count == ((Bundle)obj).Count) && (Banknote == ((Bundle)obj).Banknote);
 
-            throw new ArgumentException("Объект для сравнения не является углом.");
+            throw new ArgumentException("Объект для сравнения не является пачкой.");
         }
 
         public override int GetHashCode() => (Count,Banknote).GetHashCode();
