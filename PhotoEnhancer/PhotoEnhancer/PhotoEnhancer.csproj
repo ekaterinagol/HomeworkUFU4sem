@@ -59,6 +59,8 @@
     <Compile Include="Filters\ParameterInfo.cs" />
     <Compile Include="Filters\ParametrizedFilter.cs" />
     <Compile Include="Filters\PixelFilter.cs" />
+    <Compile Include="Filters\RangeDecreasingFilter.cs" />
+    <Compile Include="Filters\RangeUpperParameters.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
