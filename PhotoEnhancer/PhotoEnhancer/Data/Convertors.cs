@@ -86,5 +86,6 @@ namespace PhotoEnhancer
 
             return new PixelHSL(hue, saturation, lightness);
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PhotoEnhancer.Filters;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -7,141 +8,85 @@ using System.Windows.Forms;
 
 namespace PhotoEnhancer
 {
-    public partial class MainForm : Form
+    internal static class Program
     {
-        Panel parametersPanel;
-
-        Photo originalPhoto;
-        Photo resultPhoto;
-        List<NumericUpDown> numericUpDowns;
-
-        public MainForm()
+        /// <summary>
+        /// Главная точка входа для приложения.
+        /// </summary>
+        [STAThread]
+        static void Main()
         {
-            InitializeComponent();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-            //var bmp = (Bitmap)Image.FromFile("cat.jpg");
-            //originalPictureBox.Image = bmp;
-            //originalPhoto = Convertors.BitmapToPhoto(bmp);
-        }
+            var mainForm = new MainForm();
+            //mainForm.AddFilter(new LighteningFilter());
+            //mainForm.AddFilter(new GrayScaleFilter());
+            //mainForm.AddFilter(new HueFilter());
 
-        private void filtersComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
+            mainForm.AddFilter(new PixelFilter<LighteningParameters>(
+                "Осветление/затемнение",
+                (p, parameters) => p * parameters.Coefficient
+                ));
 
-            if (resultPhoto != null)
-            {
-                originalPhoto = resultPhoto;
-                originalPictureBox.Image = Convertors.PhotoToBitmap(originalPhoto);
-                resultPhoto = null;
-                resultPictureBox.Image = null;
+            mainForm.AddFilter(new PixelFilter<EmptyParameters>(
+                "Оттенки серого",
+                (p, parameters) =>
+                {
+                    var lightness = 0.3 * p.R + 0.6 * p.G + 0.1 * p.B;
+                    return new Pixel(lightness, lightness, lightness);
+                }
+                ));
 
-            }
+            mainForm.AddFilter(new PixelFilter<RangeUpperParameters>(
+                "Сужение диапазона",
+                (p, parameters) =>
+                {
 
-            applyButton.Visible = true;
+                    var RangeR = (parameters.Upper - parameters.Lower) * p.R + parameters.Lower;
+                    var RangeG = (parameters.Upper - parameters.Lower) * p.G + parameters.Lower;
+                    var RangeB = (parameters.Upper - parameters.Lower) * p.B + parameters.Lower;
 
-            if (parametersPanel != null)
-                this.Controls.Remove(parametersPanel);
+                    return new Pixel(RangeR, RangeG, RangeB);
+                }
+                ));
 
-            parametersPanel = new Panel();
+            mainForm.AddFilter(new TransformFilter(
+                "Отражение по горизонтали",
+                size => size,
+                (point, size) => new Point(size.Width - point.X - 1, point.Y)
+                ));
 
-            parametersPanel.Left = filtersComboBox.Left;
-            parametersPanel.Top = filtersComboBox.Bottom + 13;
-            parametersPanel.Width = filtersComboBox.Width;
-            parametersPanel.Height = applyButton.Top - parametersPanel.Top - 13;
+            mainForm.AddFilter(new TransformFilter(
+               "Поворот на 90° против ч.с.",
+               size => new Size(size.Height, size.Width),
+               (point, size) => new Point(size.Width - point.Y - 1, point.X)
+               ));
 
-            this.Controls.Add(parametersPanel);
+            mainForm.AddFilter(new TransformFilter(
+                "Поворот на 180° против ч.с.",
+                size => size,
+                (point, size) => new Point(size.Width - point.X - 1, size.Height - point.Y - 1)
+                ));
 
-            var filter = filtersComboBox.SelectedItem as IFilter;
 
-            if (filter == null) return;
 
-            var parametersInfo = filter.GetParametersInfo();
-            numericUpDowns = new List<NumericUpDown>();
+            //mainForm.AddFilter(new TransformFilter(
+            //    "Отражение по горизонтали",
+            //    size => size,
+            //    (point, size) => new Point(size.Width - point.X - 1, point.Y)
+            //    ));
 
-            for (var i = 0; i < parametersInfo.Length; i++)
-            {
-                var label = new Label();
-                label.Height = 28;
-                label.Left = 0;
-                label.Top = i * (label.Height + 10);
-                label.Width = parametersPanel.Width - 50;
-                label.Text = parametersInfo[i].Name;
-                label.Font = new Font(label.Font.FontFamily, 10);
-                parametersPanel.Controls.Add(label);
+            //mainForm.AddFilter(new TransformFilter(
+            //    "Поворот на 90° против ч.с.",
+            //    size => new Size(size.Height, size.Width),
+            //    (point, size) => new Point(size.Width - point.Y - 1, point.X)
+            //    ));
 
-                var inputBox = new NumericUpDown();
-                inputBox.Left = label.Right + 5;
-                inputBox.Top = label.Top;
-                inputBox.Width = 45;
-                inputBox.Height = label.Height;
-                inputBox.Font = new Font(inputBox.Font.FontFamily, 10);
-                inputBox.Minimum = (decimal)parametersInfo[i].MinValue;
-                inputBox.Maximum = (decimal)parametersInfo[i].MaxValue;
-                inputBox.Increment = (decimal)parametersInfo[i].Increment;
-                inputBox.DecimalPlaces = 2;
-                inputBox.Value = (decimal)parametersInfo[i].DefaultValue;
-                parametersPanel.Controls.Add(inputBox);
-                numericUpDowns.Add(inputBox);
-            }
-        }
+            //mainForm.AddFilter(new TransformFilter<RotationParameters>(
+            //    "Поворот на произвольный угол", new RotationTransformer()));
 
-        private void applyButton_Click(object sender, EventArgs e)
-        {
-            var filter = filtersComboBox.SelectedItem as IFilter;
-
-            if (filter != null)
-            {
-                var parameters = new double[numericUpDowns.Count];
-
-                for (var i = 0; i < parameters.Length; i++)
-                    parameters[i] = (double)numericUpDowns[i].Value;
-
-                resultPhoto = filter.Process(originalPhoto, parameters);
-                resultPictureBox.Image = Convertors.PhotoToBitmap(resultPhoto);
-            }
-        }
-
-        public void AddFilter(IFilter filter)
-        {
-            if (filter != null)
-                filtersComboBox.Items.Add(filter);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openPhotoDialog.ShowDialog() == DialogResult.OK)
-            {
-                filtersComboBox.Visible = true;
-
-                var bmp = (Bitmap)Image.FromFile(openPhotoDialog.FileName);
-                originalPictureBox.Image = bmp;
-                originalPhoto = Convertors.BitmapToPhoto(bmp);
-
-                resultPictureBox.Image = null;
-                resultPhoto = null;
-            }
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (savePhotoDialog.ShowDialog() == DialogResult.OK)
-            {
-                var bmp = Convertors.PhotoToBitmap(resultPhoto);
-
-                System.Drawing.Imaging.ImageFormat format;
-
-                if (savePhotoDialog.FilterIndex == 0)
-                    format = System.Drawing.Imaging.ImageFormat.Jpeg;
-                else
-                    format = System.Drawing.Imaging.ImageFormat.Tiff;
-
-                bmp.Save(savePhotoDialog.FileName, format);
-            }
+            Application.Run(mainForm);
         }
     }
 }
-

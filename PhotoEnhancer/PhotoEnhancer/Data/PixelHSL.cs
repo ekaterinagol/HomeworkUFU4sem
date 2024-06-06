@@ -44,14 +44,5 @@ namespace PhotoEnhancer
             return val;
         }
 
-        public static double Trim(double channel)
-        {
-            if (channel < 0) return 0;
-
-            if (channel > 1) return 1;
-
-            return channel;
-        }
-
     }
 }
