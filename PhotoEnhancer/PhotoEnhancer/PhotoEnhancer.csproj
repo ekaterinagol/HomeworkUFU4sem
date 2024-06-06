@@ -51,15 +51,12 @@
     <Compile Include="Data\Pixel.cs" />
     <Compile Include="Data\PixelHSL.cs" />
     <Compile Include="Filters\EmptyParameters.cs" />
-    <Compile Include="Filters\GrayScaleFilter.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\IParameters.cs" />
-    <Compile Include="Filters\LighteningFilter.cs" />
     <Compile Include="Filters\LighteningParameters.cs" />
     <Compile Include="Filters\ParameterInfo.cs" />
     <Compile Include="Filters\ParametrizedFilter.cs" />
     <Compile Include="Filters\PixelFilter.cs" />
-    <Compile Include="Filters\RangeDecreasingFilter.cs" />
     <Compile Include="Filters\RangeUpperParameters.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
