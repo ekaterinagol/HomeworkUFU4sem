@@ -1,4 +1,5 @@
 ﻿using PhotoEnhancer.Filters;
+using PhotoEnhancer.Filters.Transformations;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -64,27 +65,16 @@ namespace PhotoEnhancer
                ));
 
             mainForm.AddFilter(new TransformFilter(
-                "Поворот на 180° против ч.с.",
+                "Поворот на 180°",
                 size => size,
                 (point, size) => new Point(size.Width - point.X - 1, size.Height - point.Y - 1)
                 ));
 
+            mainForm.AddFilter(new TransformFilter<RotationParameters>(
+            "Поворот на произвольный угол", new RotationTransformer()));
 
-
-            //mainForm.AddFilter(new TransformFilter(
-            //    "Отражение по горизонтали",
-            //    size => size,
-            //    (point, size) => new Point(size.Width - point.X - 1, point.Y)
-            //    ));
-
-            //mainForm.AddFilter(new TransformFilter(
-            //    "Поворот на 90° против ч.с.",
-            //    size => new Size(size.Height, size.Width),
-            //    (point, size) => new Point(size.Width - point.Y - 1, point.X)
-            //    ));
-
-            //mainForm.AddFilter(new TransformFilter<RotationParameters>(
-            //    "Поворот на произвольный угол", new RotationTransformer()));
+            mainForm.AddFilter(new TransformFilter<BevelParameters>(
+            "Скос вверх", new BevelUpTransformer()));
 
             Application.Run(mainForm);
         }
