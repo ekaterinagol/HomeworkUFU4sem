@@ -1,4 +1,5 @@
 ﻿using Storage;
+using Storage.WarehouseAdapters;
 using Warehouse;
 
 namespace StorageUnitTestProject
@@ -23,23 +24,24 @@ namespace StorageUnitTestProject
             AssertStorageAddDelete(storage, productB);
         }
 
-        //[Test]
-        //public void UnlimitedWarhouseTest()
-        //{
-        //    var storage = new UnlimitedWarehouseAdapter(storageUW);
+        [Test]
+        public void UnlimitedWarhouseTest()
+        {
+            var storage = new UnlimitedWarehouseAdapter(storageUW);
 
-        //    AssertStorageAddDelete(storage, productA);
-        //    AssertStorageAddDelete(storage, productB);
-        //}
+            AssertStorageAddDelete(storage, productA);
+            AssertStorageAddDelete(storage, productB);
+        }
 
-        //[Test]
-        //public void LimitedWareHouseWithMarkingTest()
-        //{
-        //    var storage = new LimitedWarehouseWithMarkingAdapter(storageLWM);
+        [Test]
+        public void LimitedWareHouseWithMarkingTest()
+        {
+            var storage = new LimitedWarehouseWithMarkingAdapter(storageLWM);
 
-        //    AssertStorageAddDelete(storage, productA);
-        //    AssertStorageAddDelete(storage, productB);
-        //}
+            AssertStorageAddDelete(storage, productA);
+            AssertStorageAddDelete(storage, productB); // проблема с продутом B, возникает в ADD
+            //expected True but False. То есть: есть ли item в storage? ложь
+        }
 
         //[Test]
         //public void UnlimitedWarehouseWithMarkingTest()
@@ -53,7 +55,7 @@ namespace StorageUnitTestProject
         void AssertStorageAddDelete(IStorage storage, object item)
         {
             storage.Add(item);
-            Assert.IsTrue(storage.Contains(item));
+            Assert.IsTrue(storage.Contains(item)); //проблемы именно в add
 
             storage.Remove(item);
             Assert.IsFalse(storage.Contains(item));

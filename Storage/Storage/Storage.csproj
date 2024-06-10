@@ -45,6 +45,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WarehouseAdapters\LimitedWarehouseAdapter.cs" />
     <Compile Include="WarehouseAdapters\LimitedWarehouseWithMarkingAdapter.cs" />
+    <Compile Include="WarehouseAdapters\UnlimitedWarehouseAdapter.cs" />
+    <Compile Include="WarehouseAdapters\UnlimitedWarehouseWithMarkingAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Warehouse\Warehouse.csproj">

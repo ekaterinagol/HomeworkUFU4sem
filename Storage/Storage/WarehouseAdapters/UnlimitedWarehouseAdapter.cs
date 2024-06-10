@@ -5,27 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Warehouse;
 
-namespace Storage
+namespace Storage.WarehouseAdapters
 {
-    public class LimitedWarehouseAdapter : IStorage
+    public class UnlimitedWarehouseAdapter : IStorage
     {
-        LimitedWarehouse storage; 
-        //переименовали фунцкии в add, contains, remove
+        UnlimitedWarehouse storage;
 
-        public LimitedWarehouseAdapter(LimitedWarehouse warehouse)
+        public UnlimitedWarehouseAdapter(UnlimitedWarehouse warehouse)
         {
             storage = warehouse;
         }
+
         public void Add(object item)
         {
             if (item is Product product)
-                storage.Place(product);
+                storage.ThrowIn(product);
         }
 
         public bool Contains(object item)
         {
             if (item is Product product)
-                return storage.IsHere(product);
+                return storage.IsIn(product);
 
             return false;
         }
@@ -33,7 +33,7 @@ namespace Storage
         public void Remove(object item)
         {
             if (item is Product product)
-                storage.Eliminate(product);
+                storage.Utilize(product);
         }
     }
 }
