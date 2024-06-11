@@ -10,6 +10,7 @@ namespace Storage
     public class LimitedWarehouseWithMarkingAdapter : IStorage
     {
         LimitedWareHouseWithMarking storage;
+        ulong barecode;
 
         public LimitedWarehouseWithMarkingAdapter(LimitedWareHouseWithMarking warehouse)
         {
@@ -20,8 +21,11 @@ namespace Storage
         {
             if (item is IMarked markedItem)
                 storage.Push(markedItem); //проблема, подается не IMarked и не создается новый штрих-код
-            //if (item is Product notMarkedItem)
-            //    storage.Push(IMarked unit);
+            else if (item is Product notMarkedItem)
+            {
+                barecode = 1111111111111;
+                storage.Push(new MarkedProduct(notMarkedItem.Name, notMarkedItem.Dimensions, notMarkedItem.Weight, barecode));
+            }
         }
 
         public bool Contains(object item)

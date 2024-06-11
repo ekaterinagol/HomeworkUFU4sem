@@ -10,6 +10,7 @@ namespace Storage.WarehouseAdapters
     public class UnlimitedWarehouseWithMarkingAdapter : IStorage
     {
         UnlimitedWarehouseWithMarking storage;
+        ulong barecode;
 
         public UnlimitedWarehouseWithMarkingAdapter(UnlimitedWarehouseWithMarking warehouse)
         {
@@ -20,6 +21,11 @@ namespace Storage.WarehouseAdapters
         {
             if (item is IMarked markedItem)
                 storage.Put(markedItem);
+            else if (item is Product notMarkedItem)
+            {
+                barecode = 1111111111111;
+                storage.Put(new MarkedProduct(notMarkedItem.Name, notMarkedItem.Dimensions, notMarkedItem.Weight, barecode));
+            }
         }
 
         public bool Contains(object item)
