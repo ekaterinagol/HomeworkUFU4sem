@@ -39,7 +39,7 @@ namespace StorageUnitTestProject
             var storage = new LimitedWarehouseWithMarkingAdapter(storageLWM);
 
             AssertStorageAddDelete(storage, productA);
-            //AssertStorageAddDelete(storage, productB); 
+            //AssertStorageAddDelete(storage, productB);
             // проблема с продутом B, возникает в ADD
             //expected True but False. То есть: есть ли item в storage? ложь
         }
@@ -62,13 +62,15 @@ namespace StorageUnitTestProject
             Assert.IsFalse(storage.Contains(item));
         }
 
-        void AssertMarkedStorageAddDelete(IStorage storage, object item)
-        {
-            storage.Add(item);
-            Assert.IsTrue(storage.Contains(item)); //проблемы именно в add
+        //void AssertStorageAddDeleteNMintiM(IStorage storage, Product item) //переписать для проверки add
+        //{
+        //    storage.Add(item);
+        //    Assert.IsTrue(storage.Contains(item.Name));
+        //    Assert.IsTrue(storage.Contains(item.Weight));//проблемы именно в add
+        //    Assert.IsTrue(storage.Contains(item.Dimensions));
 
-            storage.Remove(item);
-            Assert.IsFalse(storage.Contains(item));
-        }
+        //    storage.Remove(item);
+        //    Assert.IsFalse(storage.Contains(item));
+        //}
     }
 }
