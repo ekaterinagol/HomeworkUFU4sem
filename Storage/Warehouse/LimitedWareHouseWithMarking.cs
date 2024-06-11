@@ -28,7 +28,7 @@ namespace Warehouse
 
             if (repository.Count() == capacity)
             {
-                var units = GetAll(); //Метод GetAll возвращает IEnumerable
+                var units = GetAll();
 
                 var minTime = units.Min(z => z.Item2);
 

@@ -19,17 +19,9 @@ namespace Storage
         public void Add(object item) // использую фаткоризацию сделайте чттобы Lsp не нарушалось. а также изменить тест, чтобы подходил новой архитектуре
         {
             if (item is IMarked markedItem)
-                storage.Push(markedItem); //проблема, что создавались новые штрих-коды а тут нет
-            //else if (item is Product notMarkedItem)
-            //{
-                
-            //    var newMarkedItem = new MarkedProduct(notMarkedItem.Name, notMarkedItem.Dimensions, notMarkedItem.Weight, new ulong());
-            //    //IMarked barecode = newMarkedItem.Barcode();
-            //    //var barecode = IMarked newMarkedItem;
-            //    //storage.Push(newMarkedItem.Barcode);
-        
-            //}
-
+                storage.Push(markedItem); //проблема, подается не IMarked и не создается новый штрих-код
+            //if (item is Product notMarkedItem)
+            //    storage.Push(IMarked unit);
         }
 
         public bool Contains(object item)
